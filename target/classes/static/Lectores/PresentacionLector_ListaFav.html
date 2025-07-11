@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lector - Mis Favoritos</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="../libro-_2_.ico" type="image/x-icon">
+    
+        
+</head>
+
+<body>
+    <header>
+        <div class="BarraNombre" id="NombreLector">
+            <h1>Lector - (Nombres y apellidos del administrador)</h1>
+        </div>
+        <div class="ContenedorNav">
+            <nav class="navbar">
+                <ul>
+                    <li><a href="PresentacionLector_Inicio.html">Inicio</a></li>
+                    <li><a href="#">Catégorias</a></li>
+                    <li><a href="PresentacionLector_Libros.html">Libros</a></li>
+                    <li><a href="PresentacionLector_ListaFav.html">Lista de Favoritos</a></li>
+                    <li><a href="PresentacionLector_HistorialReserva.html">Historial de Reserva</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="Busqueda">
+            <input type="text" placeholder="Buscar por Título">
+        </section>
+
+        <section class="ContenedorPrincipal">
+            <div class="Tabla-Scroll">
+                <div class="Tabla">
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SELECCIONAR</th>
+                                    <th>PORTADA</th>
+                                    <th>TÍTULO</th>
+                                    <th>AUTOR</th>
+                                    <th>DESCRIPCIÓN</th>
+                                    <th>CANTIDAD TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="milista-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="OpciónFav">
+            <div class="ContenedorBtn">
+                <button class="BotonAccionar" id="EliminarDeLista">ELIMINAR DE LISTA</button>
+                <button class="BotonAccionar" id="ReservarLibro">RESERVAR LIBROS</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL PARA RESERVAR LIBRO -->
+<div id="modalReserva" class="modal">
+    <div class="modal-content">
+        <h2>Seleccionar fecha de recojo</h2>
+        <label for="fechaReserva">Fecha de recojo:</label>
+        <input type="date" id="fechaReserva" required />
+        
+        <div id="errorReserva" style="color: red; margin: 10px 0;"></div>
+        
+        <div class="modal-buttons">
+            <button id="confirmarReserva">Confirmar</button>
+            <button id="cancelarReserva">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para cargar la lista de libros favoritos
+    function cargarLista() {
+        const userId = sessionStorage.getItem("userId");
+        if (!userId) {
+            alert("No se encontró el usuario logueado. Por favor inicia sesión.");
+            return;
+        }
+
+        fetch(`/api/reading-list/user/${userId}`)
+            .then(response => {
+                if (!response.ok) throw new Error("Error al obtener la lista");
+                return response.json();
+            })
+            .then(data => poblarTabla(data))
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error al cargar la lista de favoritos");
+            });
+    }
+
+    // Función para mostrar los libros en la tabla
+    function poblarTabla(libros) {
+        const tbody = document.getElementById("milista-tbody");
+        if (!tbody) {
+            console.error("No se encontró el elemento tbody");
+            return;
+        }
+        
+        tbody.innerHTML = libros.map(libro => `
+            <tr>
+                <td><input type="radio" name="seleccionLibro" class="libro-radio" data-id="${libro.id}"/></td>
+                <td><img src="${libro.imageUrl || '#'}" alt="${libro.title}" width="50" /></td>
+                <td>${libro.title}</td>
+                <td>${libro.author?.name || 'Sin autor'}</td>
+                <td>${libro.description || 'Sin descripción'}</td>
+                <td>${libro.quantity}</td>
+            </tr>
+        `).join('');
+    }
+
+    // Evento para abrir el modal de reserva
+    document.getElementById("ReservarLibro").addEventListener("click", () => {
+        const libroSeleccionado = document.querySelector("input[name='seleccionLibro']:checked");
+        
+        if (!libroSeleccionado) {
+            alert("Por favor selecciona un libro para reservar.");
+            return;
+        }
+        
+        const modal = document.getElementById("modalReserva");
+        const fechaInput = document.getElementById("fechaReserva");
+        
+        // Configurar fecha mínima (hoy)
+        const today = new Date().toISOString().split('T')[0];
+        fechaInput.min = today;
+        fechaInput.value = today;
+        
+        modal.style.display = "block";
+    });
+
+    // Evento para confirmar la reserva
+    document.getElementById("confirmarReserva").addEventListener("click", async () => {
+        try {
+            const fechaRecojo = document.getElementById("fechaReserva").value;
+            const userId = sessionStorage.getItem("userId");
+            const bookId = document.querySelector("input[name='seleccionLibro']:checked")?.dataset.id;
+
+            if (!fechaRecojo || !userId || !bookId) {
+                throw new Error("Todos los campos son obligatorios");
+            }
+
+            // Verificar si el libro está disponible
+            const libroResponse = await fetch(`/api/books/${bookId}`);
+            if (!libroResponse.ok) throw new Error("No se pudo verificar la disponibilidad del libro");
+
+            const libro = await libroResponse.json();
+            if (!libro.available || libro.quantity <= 0) {
+                throw new Error("El libro seleccionado no está disponible");
+            }
+
+            // Calcular fecha de retorno (5 días después)
+            const fechaRetorno = new Date(fechaRecojo);
+            fechaRetorno.setDate(fechaRetorno.getDate() + 5);
+
+            const reservaData = {
+                userId: Number(userId),
+                bookId: [Number(bookId)],
+                pickupDate: fechaRecojo,
+                returnDate: fechaRetorno.toISOString().split('T')[0],
+                reservationStatusId: 1 // Pendiente
+            };
+
+            const response = await fetch("/api/reservations", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(reservaData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || "Error al procesar la reserva");
+            }
+
+            // ✅ ELIMINAR AUTOMÁTICAMENTE DE LA LISTA DE FAVORITOS
+            await fetch(`/api/reading-list/delete?userId=${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify([Number(bookId)])
+            });
+
+            // UI éxito
+            alert("¡Reserva realizada con éxito!");
+            document.getElementById("modalReserva").style.display = "none";
+            cargarLista(); // Recargar la lista
+
+        } catch (error) {
+            console.error("Error en reserva:", error);
+            document.getElementById("errorReserva").textContent = error.message;
+        }
+    });
+
+    // Cancelar reserva
+    document.getElementById("cancelarReserva").addEventListener("click", () => {
+        document.getElementById("modalReserva").style.display = "none";
+        document.getElementById("errorReserva").textContent = "";
+    });
+
+    // Eliminar manualmente de la lista
+    document.getElementById("EliminarDeLista").addEventListener("click", async () => {
+        try {
+            const tbody = document.getElementById("milista-tbody");
+            const checkboxes = tbody.querySelectorAll("input[type='radio']:checked");
+
+            if (checkboxes.length === 0) {
+                throw new Error("Selecciona al menos un libro para eliminar.");
+            }
+
+            const idsAEliminar = Array.from(checkboxes).map(checkbox => Number(checkbox.dataset.id));
+            const userId = sessionStorage.getItem("userId");
+            
+            if (!userId) throw new Error("No se encontró el ID de usuario en la sesión.");
+
+            const response = await fetch(`/api/reading-list/delete?userId=${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(idsAEliminar)
+            });
+
+            if (!response.ok) throw new Error("Error al eliminar libros en el servidor");
+
+            checkboxes.forEach(checkbox => {
+                const fila = checkbox.closest("tr");
+                if (fila) fila.remove();
+            });
+
+            alert("Libros eliminados exitosamente.");
+
+        } catch (error) {
+            console.error("Error al eliminar:", error);
+            alert(error.message);
+        }
+    });
+
+    // Cargar la lista al cargar la página
+    document.addEventListener("DOMContentLoaded", cargarLista);
+</script>
+
+
+    <script src="../js/script.js"></script>
+</body>
+</html>
