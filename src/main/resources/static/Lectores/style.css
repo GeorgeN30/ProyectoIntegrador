@@ -1,0 +1,384 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #260202;
+    color: white;
+}
+
+main {
+    padding: 50px;
+}
+
+.BarraNombre {
+    background-color: #BF5B04;
+    margin-top: 25px;
+    padding: 1px 10px;
+    text-align: right;
+    
+    font-weight: bold;
+}
+.BarraNombre h1 {
+    font-size: 25px;
+    padding-right: 20px;
+}
+
+
+/*===========================================================*/
+/*                        INICIO                             */
+
+/* Estilo general */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #250202; /* Fondo oscuro */
+    color: #ffffff;
+}
+
+/* BANNER */
+#ContenedorBanner {
+    margin-top: 60px;
+    height: 636px;
+    width:97.%;
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* capa oscura con opacidad */
+        url('../Imagenes/Bibliotecaimg.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    text-align: left;
+    padding: 60px 20px;
+    color: #fff;
+}
+
+
+#ContenedorBanner h2 {
+    color: #BF5B04;
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+#ContenedorBanner h3 {
+    font-size: 1.5em;
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+
+#ContenedorBanner p {
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+    font-size: 1.1em;
+}
+
+#ContenedorBanner button {
+    background-color: #2c0d00;
+    color: #fff;
+    padding: 12px 25px;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+#ContenedorBanner button:hover {
+    background-color: #491800;
+}
+
+/* NOSOTROS */
+#Nosotros {
+    padding: 60px 20px;
+    background-color: #300303;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 50px;
+}
+
+.Containerblock {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.text-block {
+    flex: 1;
+    padding: 20px;
+}
+
+.video-container {
+    flex: 1;
+    padding: 20px;
+}
+
+.botton-grid {
+    background-color: #b95100;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.botton-grid:hover {
+    background-color: #ff6a00;
+}
+
+/* VALORES */
+.contenedorFondo {
+    background-color: #1c0101;
+    padding: 60px 20px;
+}
+
+.contenedorTítulo h2 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: #ffcc99;
+}
+
+.contenedorDescripción p {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.contenedor-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.contenedor-vertical {
+    background-color: #3a0a0a;
+    border-radius: 10px;
+    padding: 20px;
+    width: 260px;
+    text-align: center;
+    color: #f3f3f3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.contenedor-vertical h3 {
+    color: #ffa94d;
+    margin-bottom: 10px;
+}
+
+.ajustar-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.ajustar-text p {
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+
+/*===========================================================*/
+/*                        DATOS DE USUARIO                             */
+
+.BarraNombre {
+    background-color: #BF5B04;
+    margin-top: 25px;
+    padding: 1px 10px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.BarraNombre h1 {
+    font-size: 25px;
+    padding-right: 20px;
+}
+
+
+/*===========================================================*/
+/*                        NAVEGADOR                              */
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin: 0;
+}
+
+.navbar li {
+    margin: 0 2px;
+    padding: 5px 60px;
+    cursor: pointer;
+    border-right: 1px solid #BF5B04;
+    transition: color 0.4s ease;
+    align-items: left;
+}
+
+.navbar li:last-child {
+    border-right: none;
+}
+
+.navbar li a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.5s ease;
+}
+
+.navbar li a:hover {
+    color: #BF5B04;
+}
+
+/*===========================================================*/
+/*                        BOTONES                             */
+.ContenedorBtn {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.BotonAccionar {
+    padding: 10px 30px;
+    background-color: transparent;
+    color: #BF5B04;
+    border: 2px solid #BF5B04;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.BotonAccionar:hover {
+    background-color: #BF5B04;
+    color: white;
+}
+
+/*===========================================================*/
+/*                        BUSQUEDA                             */
+
+.Busqueda {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.Busqueda input {
+    padding: 10px;
+    width: 50%;
+    border: 2px solid #BF5B04;
+    border-radius: 8px;
+}
+
+
+
+/*===========================================================*/
+/*                        TABLAS                             */
+
+/* Contenedor Principal */
+.ContenedorPrincipal {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Catálogo */
+.ContenedorCategorias {
+    background-color: #BF5B04;
+    color: white;
+    padding: 20px;
+    width: 250px;
+    border-radius: 8px;
+}
+
+.ContenedorCategorias h3,
+.ContenedorCategorias h4 {
+    color: #260202;
+}
+
+.ContenedorCategorias ul {
+    list-style: none;
+    padding: 0;
+}
+
+.ContenedorCategorias li {
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.ContenedorCategorias li:hover {
+    color: #b0b01c;
+    font-weight: bold;
+}
+
+
+.Tabla-Scroll{
+    width: 100%;
+    max-height: 480px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    z-index: 0;
+}
+.Tabla {
+    width: 100%;
+}
+
+.Tabla table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    color: black;
+    border: 2px solid #897575;
+}
+
+.Tabla th {
+    background-color: #897575;
+    color: white;
+    padding: 10px;
+    border: 1px solid #BF5B04;
+}
+
+.Tabla td {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #897575;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    color: black;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+.modal-buttons button {
+    margin: 10px;
+    padding: 8px 16px;
+}

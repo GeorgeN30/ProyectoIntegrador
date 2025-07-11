@@ -1,0 +1,500 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #260202;
+    color: white;
+}
+
+main {
+    padding: 40px;
+}
+
+.Tabla-Scroll {
+    width: 100%;
+    max-height: 410px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    z-index: 0;
+}
+
+.Tabla {
+    width: 100%;
+
+}
+
+.Tabla table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    color: black;
+    border: 2px solid #897575;
+}
+
+.Tabla th {
+    background-color: #897575;
+    color: white;
+    padding: 10px;
+    border: 1px solid #BF5B04;
+}
+
+.Tabla td {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #897575;
+}
+
+.BarraNombre {
+    background-color: #BF5B04;
+    margin-top: 25px;
+    padding: 1px 10px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.BarraNombre h1 {
+    font-size: 25px;
+    padding-right: 20px;
+}
+
+.navbar {
+    background-color: #260202;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin: 0;
+}
+
+.navbar li {
+    margin: 0 2px;
+    padding: 5px 60px;
+    cursor: pointer;
+    border-right: 1px solid #BF5B04;
+    transition: color 0.4s ease;
+    align-items: left;
+}
+
+.navbar li:last-child {
+    border-right: none;
+}
+
+.navbar li.active,
+.navbar li :hover {
+    color: #BF5B04;
+    font-weight: bold;
+}
+
+
+
+.nombrecaja {
+    color: #897575;
+    font-size: 14px;
+}
+
+
+.contenido {
+    display: none;
+}
+
+.contenido.visible {
+    display: block;
+}
+
+/* ========= REGISTRAR LIBRO ========= */
+.contenedor-formulario {
+    display: flex;
+    gap: 40px;
+    margin: 10px 30px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.contenedor-formulario label {
+    font-size: 15px;
+    color: #897575;
+}
+
+.columna {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+.columna input,
+.columna select,
+.columna textarea {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    color: #333;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+    height: 250px;
+    max-height: 250px;
+    min-height: 120px;
+    width: 350px;
+}
+
+.preview-img {
+    width: 190px;
+    height: 250px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.preview-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+input[type="file"] {
+    font-size: 14px;
+}
+
+
+#btnRegistrarLibro {
+    padding: 10px 30px;
+    background-color: transparent;
+    color: #BF5B04;
+    border: 2px solid #BF5B04;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#btnRegistrarLibro:hover {
+    background-color: #BF5B04;
+    color: white;
+}
+
+
+
+
+/* ========= REPORTE =========*/
+
+
+.oculto {
+    display: none !important;
+}
+
+.contenido.visible {
+    display: block;
+}
+
+#reporte {
+    padding: 10px;
+    position: relative;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.navbarreporte {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.menu-reporte {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin: 0;
+}
+
+.menu-reporte li {
+    margin: 0 15px;
+    cursor: pointer;
+    padding: 5px 50px;
+    border-right: 1px solid #BF5B04;
+    transition: color 0.4s ease
+}
+
+.menu-reporte li:last-child {
+    border-right: none;
+}
+
+.menu-reporte li.activo {
+    color: #FF8C00;
+    font-weight: bold;
+}
+
+.busqueda-contenedor {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.busqueda-contenedor label {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 5px;
+}
+
+.Busqueda {
+    padding: 5px;
+    background-color: #855f5f;
+    border: 2px solid #FF8C00;
+    color: white;
+}
+
+.submit-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+.submit-btn button {
+    background-color: transparent;
+    border: 2px solid #FF8C00;
+    color: #FF8C00;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color, background-color 0.5s ease;
+}
+
+.submit-btn button:hover {
+    background-color: #FF8C00;
+    color: white;
+}
+
+/* ============ Sancionar ============*/
+
+#sancionarLector {
+    padding: 10px;
+    position: relative;
+    min-height: 100vh;
+    box-sizing: border-box;
+    color: white;
+}
+
+.navbarreporte {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.menu-sancion {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin: 0;
+}
+
+.menu-sancion li {
+    margin: 0 15px;
+    cursor: pointer;
+    padding: 5px 50px;
+    border-right: 1px solid #BF5B04;
+    transition: color 0.4s ease;
+}
+
+.menu-sancion li:last-child {
+    border-right: none;
+}
+
+.menu-sancion li.activo {
+    color: #FF8C00;
+    font-weight: bold;
+}
+
+.contenedor-acciones {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.btn-accion button {
+    background-color: transparent;
+    border: 2px solid #FF8C00;
+    color: #FF8C00;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color, background-color 0.5s ease;
+}
+
+.btn-accion button:hover {
+    background-color: #FF8C00;
+    color: white;
+}
+
+
+
+
+.form-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.left-section,
+.right-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.left-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.right-section {
+    flex: 2;
+    min-width: 400px;
+}
+
+.input-field,
+.textarea-field,
+.select-field {
+    width: 100%;
+    background-color: #d3d3d3;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.textarea-field {
+    height: 200px;
+    resize: none;
+}
+
+.form-footer {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.botonenviarreporte {
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    background-color: #5c0000;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.botonenviarreporte:hover {
+    background-color: #800000;
+}
+
+
+.form-sancion {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.left-sancion,
+.right-sancion {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.left-sancion {
+    flex: 1;
+    min-width: 300px;
+}
+
+.right-sancion {
+    flex: 2;
+    min-width: 400px;
+}
+
+.input-sancion,
+.textarea-sancion ,
+.left-sancion select {
+    width: 100%;
+    background-color: #d3d3d3;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.textarea-sancion {
+    height: 200px;
+    resize: none;
+}
+
+.footer-sancion {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.boton-sancion-enviar {
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    background-color: #5c0000;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.boton-sancion-enviar:hover {
+    background-color: #800000;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    color: black;
+    width: 300px;
+    padding: 20px;
+    margin: 100px auto;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.modal-content select {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+}
+
+.modal-buttons button {
+    margin: 10px;
+    padding: 8px 12px;
+}
+
