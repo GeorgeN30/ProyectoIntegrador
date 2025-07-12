@@ -7,7 +7,12 @@
     <title>Panel Administrador</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="../libro-_2_.ico" type="image/x-icon">
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
 </head>
 
 <body>
@@ -23,6 +28,7 @@
                     <li data-id="Sancionar" onclick="MostrarCadaSeccióndelNav('Sancionar')">Sancionar Lector</li>
                     <li data-id="ListarLibro" onclick="MostrarCadaSeccióndelNav('ListarLibro')">Lista de Libros</li>
                     <li data-id="Reserva" onclick="MostrarCadaSeccióndelNav('Reserva')">Reservas</li>
+                    <li data-id="Dashboard" onclick="MostrarCadaSeccióndelNav('Dashboard')">Dashboard</li>
                 </ul>
             </nav>
 
@@ -350,6 +356,7 @@
 
 
         <!-- Reservas -->
+         <!-- Reservas -->
         <section id="Reserva" class="contenido">
             <div class="busqueda-contenedor">
                 <label for="busqueda-Reserva">Busqueda</label>
@@ -494,8 +501,65 @@ async function confirmarCambioEstado() {
     }
 }
 </script>
+        <!-- DASHBOARD! -->
+        <section id="Dashboard" class="contenido">
+            <!-- El contenido del dashboard va aquí -->
+            <div class="dashboard-header"> <!-- Este div puede ser redundante si ya tienes un header principal -->
+                <h1>Dashboard de Gestión de Biblioteca</h1>
+            </div>
+
+            <div class="dashboard-container">
+                <!-- KPI de Reservas del Mes -->
+                <div class="kpi-card">
+                    <h2 id="kpiReservationsLabel">Reservas del Mes</h2>
+                    <span class="kpi-value" id="kpiReservationsValue">Cargando...</span>
+                    <div class="kpi-secondary-info">
+                        <span class="kpi-percentage" id="kpiReservationsPercentage"></span>
+                        <i class="kpi-trend-icon" id="kpiReservationsTrendIcon"></i>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Libros por Categoría -->
+                <div class="chart-card">
+                    <h2>Libros por Categoría</h2>
+                    <canvas id="bookCategoryChart"></canvas>
+                </div>
+
+                <!-- Gráfico de Disponibilidad de Libros -->
+                <div class="chart-card">
+                    <h2>Disponibilidad de Libros</h2>
+                    <canvas id="bookAvailableChart"></canvas>
+                </div>
+
+                <!-- Gráfico de Línea de Reservas Mensuales -->
+                <div class="chart-card large-chart">
+                    <h2>Reservas Mensuales (Últimos 6 Meses)</h2>
+                    <canvas id="reservationsByMonthChart"></canvas>
+                </div>
+
+                <!-- Gráfico de Top 5 Libros Más Reservados -->
+                <div class="chart-card">
+                    <h2>Top 5 Libros Más Reservados</h2>
+                    <canvas id="topReservedBooksChart"></canvas>
+                </div>
+
+                <!-- Gráfico de Penalidades por Tipo -->
+                <div class="chart-card">
+                    <h2>Penalidades por Tipo</h2>
+                    <canvas id="penaltiesByTypeChart"></canvas>
+                </div>
+
+                <!-- Gráfico de Top 5 Autores Más Reservados -->
+                <div class="chart-card">
+                    <h2>Top 5 Autores Más Reservados</h2>
+                    <canvas id="topReservedAuthorsChart"></canvas>
+                </div>
+            </div>
+        </section>   
+    </main>
 
     <script src="../js/script.js"></script>
+    <script src="../js/dashboard.js"></script>
 </body>
 
 </html>

@@ -467,6 +467,172 @@ input[type="file"] {
     background-color: #800000;
 }
 
+
+/* --- ESTILOS DEL DASHBOARD (INDEPENDIENTES Y ESPECÍFICOS) --- */
+
+/* La sección del dashboard en sí puede tener un fondo blanco si deseas */
+#Dashboard.contenido.visible {
+    background-color: #260202;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    color: #333; /* Color de texto para el dashboard */
+    padding: 25px; /* Ajusta el padding interno de la sección */
+}
+
+/* Header del dashboard dentro de la sección */
+#Dashboard .dashboard-header {
+    background-color: #BF5B04; /* Puedes ajustar si quieres que sea diferente al header principal */
+    color: #ffffff;
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    border-radius: 10px; /* Bordes redondeados para el header del dashboard */
+}
+
+#Dashboard .dashboard-header h1 {
+    margin: 0;
+    font-size: 2.2em;
+}
+
+#Dashboard .dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    padding: 0; /* Padding ya lo da la sección #Dashboard */
+    max-width: 1200px; /* El contenedor principal ya limita el ancho */
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 auto; /* Centra el contenedor del dashboard */
+}
+
+/* Estilos generales para las tarjetas de gráficos y KPI dentro del Dashboard */
+#Dashboard .chart-card,
+#Dashboard .kpi-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    /* box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); */
+    box-shadow: 0 6px 15px rgba(191, 91, 4, 0.3);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-height: 350px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+#Dashboard .chart-card:hover,
+#Dashboard .kpi-card:hover {
+    transform: translateY(-5px);
+    /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); */
+    box-shadow: 0 6px 15px rgba(191, 91, 4, 0.3);
+}
+
+#Dashboard .chart-card h2,
+#Dashboard .kpi-card h2 {
+    color: #34495e;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+#Dashboard .large-chart {
+    grid-column: 1 / -1;
+    min-height: 450px;
+}
+
+#Dashboard .chart-card canvas {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+#Dashboard .large-chart canvas {
+    height: 400px !important;
+}
+
+/* --- ESTILOS ESPECÍFICOS PARA EL KPI CARD (AJUSTADOS AL DASHBOARD) --- */
+#Dashboard .kpi-card {
+    min-height: 200px;
+    justify-content: space-around;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#Dashboard .kpi-card h2 {
+    margin-bottom: 15px;
+}
+
+#Dashboard .kpi-value {
+    font-size: 4.5em; /* Ajustado para que no sea tan grande */
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    display: block;
+    line-height: 1;
+    margin-top: auto;
+}
+
+#Dashboard .kpi-secondary-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    margin-bottom: auto;
+}
+
+#Dashboard .kpi-percentage {
+    font-size: 1.4em; /* Ajustado */
+    font-weight: bold;
+}
+
+#Dashboard .kpi-percentage.positive {
+    color: #2ecc71;
+}
+
+#Dashboard .kpi-percentage.negative {
+    color: #e74c3c;
+}
+
+#Dashboard .kpi-percentage.flat {
+    color: #7f8c8d;
+}
+
+#Dashboard .kpi-trend-icon {
+    font-size: 1.8em; /* Ajustado */
+}
+
+#Dashboard .kpi-trend-icon.up {
+    color: #2ecc71;
+}
+
+#Dashboard .kpi-trend-icon.down {
+    color: #e74c3c;
+}
+
+#Dashboard .kpi-trend-icon.flat {
+    color: #7f8c8d;
+}
+
+/* Colores personalizados para los gráficos */
+:root {
+    --color-primary: #3498db;
+    --color-secondary: #2ecc71;
+    --color-tertiary: #e74c3c;
+    --color-quaternary: #f39c12;
+    --color-quinary: #9b59b6;
+    --color-light-blue: #a3c1ed;
+    --color-light-green: #b9e0b8;
+    --color-light-red: #f2a89a;
+}
+
 .modal {
     display: none;
     position: fixed;

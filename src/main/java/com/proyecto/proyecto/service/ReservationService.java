@@ -1,5 +1,5 @@
 package com.proyecto.proyecto.service;
-//Los metodos están al final
+
 import com.proyecto.proyecto.model.dto.CreateReservationRequest;
 import com.proyecto.proyecto.model.dto.ReservationResponse;
 
@@ -10,7 +10,7 @@ public interface ReservationService {
     ReservationResponse save(CreateReservationRequest request);
     List<ReservationResponse> findAll();
 
-    //creación de metodos para cancelar y confirmar
+        //creación de metodos para cancelar y confirmar
     void cancel(Long reservationId);
     void confirmed(Long reservationId);
 

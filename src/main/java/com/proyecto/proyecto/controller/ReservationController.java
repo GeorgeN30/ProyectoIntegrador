@@ -1,5 +1,5 @@
-//Los metodos están al final
 package com.proyecto.proyecto.controller;
+
 import com.proyecto.proyecto.model.dto.CreateReservationRequest;
 import com.proyecto.proyecto.model.dto.ReservationResponse;
 import com.proyecto.proyecto.service.ReservationService;
@@ -34,6 +34,7 @@ public class ReservationController {
     }
 
 
+    
 
     //petición para colocar el estado a cancelado
     @PutMapping("/{id}/cancel")
@@ -49,8 +50,6 @@ public class ReservationController {
     reservationService.confirmed(id);
     return ResponseEntity.ok().build();
     }
-
-
 
 
 }

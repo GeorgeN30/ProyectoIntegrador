@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
             nombreAdminDiv.textContent = "ADMINISTRADOR";
         }
     }
+    
+    // Cargar los usuarios para las sanciones
+    ObtenerUsuariosSanción();
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -141,13 +144,33 @@ document.addEventListener("DOMContentLoaded", () => {
                     sessionStorage.setItem("nombreUsuario", data.name);
                     sessionStorage.setItem("apellidoUsuario", data.lastName);
 
-                    if (data.role === "ADMINISTRADOR") {
-                        window.location.href = "/Administracion/PresentacionAdmin.html";
-                    } else if (data.role === "LECTOR") {
-                        window.location.href = "/Lectores/PresentacionLector_Inicio.html";
-                    } else {
-                        alert("Rol no reconocido.");
-                    }
+                    // Consultar sanciones del usuario
+                    fetch(`/api/penalties/user/${data.id}/active`)
+                        .then(response => {
+                            if (!response.ok) throw new Error("Error al consultar sanciones");
+                            return response.json();
+                        })
+                        .then(sanciones => {
+                            // Verificar si tiene alguna sanción no pagada
+                            const tieneNoPagado = sanciones.some(sancion => sancion.paid === false);
+                            if (tieneNoPagado) {
+                                alert("No puedes iniciar sesión porque tienes sanciones pendientes de pago. Por favor, contacta al administrador.");
+                                sessionStorage.clear();
+                                return;
+                            }
+
+                            // Si no tiene sanción pendiente, continuar con el flujo normal
+                            if (data.role === "ADMINISTRADOR") {
+                                window.location.href = "/Administracion/PresentacionAdmin.html";
+                            } else if (data.role === "LECTOR") {
+                                window.location.href = "/Lectores/PresentacionLector_Inicio.html";
+                            } else {
+                                alert("Rol no reconocido.");
+                            }
+                        })
+                        .catch(error => {
+                            alert("Error: " + error.message);
+                        });
                 })
                 .catch(error => alert("Error: " + error.message));
         });
@@ -308,20 +331,94 @@ function CargarTablaUsuariosSanción(users) {
 
 function ObtenerUsuariosSanción() {
     fetch('/api/users')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(users => {
             // Filtrar solo usuarios con rol LECTOR
             const lectores = users.filter(user => user.role === "LECTOR");
             ListadeLectores_Sanción = lectores;
             CargarTablaUsuariosSanción(lectores);
         })
-        .catch(error => console.error("Error al obtener los usuarios:", error));
+        .catch(error => {
+            
+        });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    ObtenerUsuariosSanción();
-});
+document.getElementById("boton-sancion").addEventListener("click", () => {
+    const seleccionado = document.querySelector('input[name="seleccionSancion"]:checked');
 
+    if (!seleccionado) {
+        alert("Primero selecciona una Sanción");
+        return;
+    }
+
+    // Validar que el motivo de la sanción sea uno de los valores válidos
+    const validReasons = ['RETURN_DELAY', 'LOST_BOOK', 'DAMAGED_BOOK', 'OTHER'];
+    const reason = seleccionado.dataset.reason;
+    if (!validReasons.includes(reason)) {
+        alert(`El motivo de la sanción no es válido. Debe ser uno de: ${validReasons.join(', ')}`);
+        return;
+    }
+
+    // Validar fechas antes de convertirlas
+    const rawSuspensionDate = seleccionado.dataset.suspensionDate;
+    const rawSuspensionEndDate = seleccionado.dataset.suspensionEndDate;
+
+    if (!rawSuspensionDate || !rawSuspensionEndDate) {
+        alert("Las fechas de suspensión no están definidas correctamente.");
+        return;
+    }
+
+    const suspensionDate = new Date(rawSuspensionDate);
+    const suspensionEndDate = new Date(rawSuspensionEndDate);
+
+    if (isNaN(suspensionDate) || isNaN(suspensionEndDate)) {
+        alert("El formato de las fechas de suspensión es inválido.");
+        return;
+    }
+
+    const body = {
+        userId: parseInt(seleccionado.dataset.userId),
+        amount: parseFloat(seleccionado.dataset.amount),
+        reason: seleccionado.dataset.reason, // Debe ser uno de los valores del enum Reason
+        description: seleccionado.dataset.description,
+        suspensionDate: suspensionDate.toISOString().split('T')[0],
+        suspensionEndDate: suspensionEndDate.toISOString().split('T')[0],
+        paid: true
+    };
+
+    fetch(`/api/penalties/${seleccionado.dataset.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Sanción actualizada a 'Pagada'");
+            seleccionado.disabled = true;
+            const fila = seleccionado.closest("tr");
+            if (fila) {
+                const celdas = fila.querySelectorAll('td');
+                if (celdas.length > 0) {
+                    celdas[celdas.length - 1].textContent = "Pagado";
+                }
+            }
+            cargarTodasLasSanciones(); // repinta la tabla sin recargar la página
+        } else {
+            return response.json().then(data => {
+                throw new Error(data.message || `Error: ${response.status}`);
+            });
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error al actualizar la sanción: " + err.message);
+    });
+});
 ////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////       FORMULARIO REPORTE       //////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,6 +438,16 @@ document.querySelector("form.form-container").addEventListener("submit", functio
     if (!bookId || !title) {
         alert("Debes seleccionar un libro antes de enviar el reporte.");
         return;
+    }
+
+    // Evitar reportar si el libro está marcado como No disponible
+    const filaLibro = document.querySelector(`tr[data-book-id="${bookId}"]`);
+    if (filaLibro) {
+        const celdaEstado = filaLibro.querySelector('.estado-libro');
+        if (celdaEstado && celdaEstado.textContent.trim() === "No disponible") {
+            alert("No puedes reportar un libro que está marcado como 'No disponible'.");
+            return;
+        }
     }
 
     if (!tipo) {
@@ -421,12 +528,73 @@ document.querySelector("form.form-container").addEventListener("submit", functio
         });
 });
 
+
+document.getElementById("botonSolucionado").addEventListener("click", () => {
+    const seleccion = document.querySelector('input[name="seleccionReporte"]:checked');
+    if (!seleccion) {
+        alert("Primero selecciona un reporte");
+        return;
+    }
+    const reporteId = seleccion.dataset.id;
+    const cantidad = parseInt(seleccion.dataset.cantidad);
+    const bookId = seleccion.dataset.bookId;
+
+    const body = {
+        id: reporteId,
+        bookId: bookId,
+        type: seleccion.dataset.type,
+        description: seleccion.dataset.description,
+        reportDate: new Date(seleccion.dataset.reportDate).toISOString().split('T')[0],
+        restockDate: new Date(seleccion.dataset.restockDate).toISOString().split('T')[0],
+        cantidad: cantidad,
+        resolved: true
+    };
+
+    fetch(`/api/reports/${reporteId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Reporte marcado como resuelto");
+            // 1. Actualizar la celda de estado en la tabla
+            const fila = seleccion.closest("tr");
+            fila.querySelector("td:last-child").textContent = "Resuelto";
+            // 2. Devolver la cantidad al stock
+            actualizarDisponibilidadLibro(bookId, -cantidad);
+            // 3. Deshabilitar el radio button inmediatamente
+            seleccion.checked = false;
+            seleccion.disabled = true;
+        } else {
+            return response.json().then(data => {
+                throw new Error(data.message || `Error: ${response.status}`);
+            });
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error al marcar el reporte como resuelto: " + err.message);
+    });
+});
+
 function agregarReporteATabla(reporte) {
     const tbody = document.querySelector(".tbody-reporte");
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-        <td><input type="radio" name="seleccionReporte" data-id="${reporte.id}"></td>
+        <td>
+            <input type="radio"
+                   name="seleccionReporte"
+                   data-id="${reporte.id}"
+                   data-book-id="${reporte.book.id}"
+                   data-type="${reporte.type}"
+                   data-description="${reporte.description}"
+                   data-report-date="${reporte.reportDate}"
+                   data-restock-date="${reporte.restockDate}"
+                   data-cantidad="${reporte.cantidad}"
+                   ${reporte.resolved ? 'disabled' : ''}>
+        </td>
         <td>${reporte.id}</td>
         <td>${reporte.book.id}</td>
         <td>${reporte.book.title}</td>
@@ -434,13 +602,35 @@ function agregarReporteATabla(reporte) {
         <td>${reporte.description}</td>
         <td>${reporte.reportDate}</td>
         <td>${reporte.restockDate}</td>
-        <td>${reporte.cantidad}</td> <!-- Nueva columna -->
+        <td>${reporte.cantidad}</td>
         <td>${reporte.resolved ? "Resuelto" : "Pendiente"}</td>
     `;
 
     tbody.appendChild(tr);
-    // Actualizar la disponibilidad del libro correspondiente
-    actualizarDisponibilidadLibro(reporte.book.id, reporte.cantidad);
+    // Solo actualizar disponibilidad si el reporte está pendiente
+    if (!reporte.resolved) {
+        actualizarDisponibilidadLibro(reporte.book.id, reporte.cantidad);
+    }
+}
+
+// Función para actualizar la cantidad disponible y estado en la tabla de libros
+function actualizarDisponibilidadLibro(bookId, cantidadReportada) {
+    // Busca la fila del libro en la tabla de libros (ajusta el selector a tu estructura real)
+    const filaLibro = document.querySelector(`tr[data-book-id="${bookId}"]`);
+    if (!filaLibro) return;
+
+    // Ajusta el selector a la celda de cantidad disponible (usa la clase o el índice correcto)
+    const celdaCantidad = filaLibro.querySelector('.cantidad-disponible');
+    let cantidadActual = parseInt(celdaCantidad.textContent);
+    let nuevaCantidad = cantidadActual - cantidadReportada;
+    if (nuevaCantidad < 0) nuevaCantidad = 0;
+    celdaCantidad.textContent = nuevaCantidad;
+
+    // Ajusta el selector a la celda de estado (usa la clase o el índice correcto)
+    const celdaEstado = filaLibro.querySelector('.estado-libro');
+    if (nuevaCantidad <= 0) {
+        celdaEstado.textContent = "No disponible";
+    }
 }
 
 // Función para actualizar la cantidad disponible y estado en la tabla de libros
@@ -528,16 +718,41 @@ document.getElementById("formulario-sancion").addEventListener("submit", functio
 function agregarSancionATabla(penalty) {
     const tbody = document.getElementById("tabla-sanciones");
 
+    // Normalizar fechas a formato YYYY-MM-DD
+    let suspensionDate = penalty.suspensionDate;
+    let suspensionEndDate = penalty.suspensionEndDate;
+
+    if (suspensionDate) {
+        const d = new Date(suspensionDate);
+        if (!isNaN(d)) {
+            suspensionDate = d.toISOString().split('T')[0];
+        }
+    }
+    if (suspensionEndDate) {
+        const d = new Date(suspensionEndDate);
+        if (!isNaN(d)) {
+            suspensionEndDate = d.toISOString().split('T')[0];
+        }
+    }
+
     const tr = document.createElement("tr");
     tr.innerHTML = `
-        <td><input type="radio" name="seleccionSancion" data-id="${penalty.id}"></td>
+        <td><input type="radio" name="seleccionSancion" 
+                   data-id="${penalty.id}" 
+                   data-user-id="${penalty.user.id}" 
+                   data-reason="${penalty.reason}"
+                   data-description="${penalty.description}"
+                   data-suspension-date="${suspensionDate || ''}"
+                   data-suspension-end-date="${suspensionEndDate || ''}"
+                   data-amount="${penalty.amount}"
+                   ${penalty.paid ? 'disabled' : ''}></td>
         <td>${penalty.id}</td>
         <td>${penalty.user.id}</td>
         <td>${penalty.user.name} ${penalty.user.lastName}</td>
         <td>${penalty.reason}</td>
         <td>${penalty.description}</td>
-        <td>${penalty.suspensionDate}</td>
-        <td>${penalty.suspensionEndDate}</td>
+        <td>${suspensionDate || ''}</td>
+        <td>${suspensionEndDate || ''}</td>
         <td>S/. ${penalty.amount.toFixed(2)}</td>
         <td>${penalty.paid ? "Pagado" : "No pagado"}</td>
     `;

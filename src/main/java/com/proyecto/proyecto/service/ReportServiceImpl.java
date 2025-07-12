@@ -75,6 +75,19 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.findById(id)
                 .map(report -> bookRepository.findById(request.getBookId())
                         .map(book -> {
+                            // Si el reporte NO estaba resuelto y ahora se resuelve, devolver cantidad
+                            boolean wasResolved = Boolean.TRUE.equals(report.getResolved());
+                            boolean willBeResolved = Boolean.TRUE.equals(request.getResolved());
+                            if (!wasResolved && willBeResolved) {
+                                // Sumar la cantidad reportada al stock del libro
+                                int nuevaCantidad = book.getQuantity() + report.getCantidad();
+                                book.setQuantity(nuevaCantidad);
+                                if (nuevaCantidad > 0) {
+                                    book.setAvailable(true);
+                                }
+                                bookRepository.save(book);
+                            }
+
                             report.setBook(book);
                             report.setType(request.getType());
                             report.setDescription(request.getDescription());
